@@ -32,12 +32,15 @@ public class Robot extends IterativeRobot {
 	// Integer ports according to roboRio setup
 	final int LEFT_JOYSTICK_PORT = 1;
 	final int RIGHT_JOYSTICK_PORT = 2;
-	final int LEFT_BACK_PORT = 4;
-	final int LEFT_FRONT_PORT = 3;
-	final int RIGHT_BACK_PORT = 2;
-	final int RIGHT_FRONT_PORT = 1;
+	
+	// Talon ports 
+	final int LEFT_BACK_PORT = 3;
+	final int LEFT_FRONT_PORT = 2;
+	final int RIGHT_BACK_PORT = 1;
+	final int RIGHT_FRONT_PORT = 0;
+	
 	final int GYRO_PORT = 0; 
-	final int SPIKE_PORT = 0;
+	final int SPIKE_PORT = 0; // Not currently used
 	
 	// Following speeds require double values between -1.0 and 1.0
 	final double X_SPEED = 0;
@@ -50,6 +53,10 @@ public class Robot extends IterativeRobot {
 	double rightX;
 	double rightY;
 	
+	// Stuff
+	int gyroResetTime = 5000;
+	long currentTime;
+	
 	// Supporting methods
 	
 	
@@ -59,10 +66,11 @@ public class Robot extends IterativeRobot {
     	// Instantiation of various peripherals
 		leftJoy = new Joystick(LEFT_JOYSTICK_PORT);
     	rightJoy = new Joystick(RIGHT_JOYSTICK_PORT);
-    	drive = new RobotDrive(LEFT_FRONT_PORT, LEFT_BACK_PORT, RIGHT_FRONT_PORT, RIGHT_BACK_PORT);
     	gyro = new Gyro(GYRO_PORT);
     	timer = new Timer();
     	spike = new Relay(SPIKE_PORT);
+    	drive = new RobotDrive(LEFT_BACK_PORT, LEFT_FRONT_PORT, RIGHT_BACK_PORT, RIGHT_FRONT_PORT);
+    	gyro.reset();
     }
 
     /**
@@ -76,13 +84,21 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	currentTime = System.currentTimeMillis();
     	while(isEnabled() && isOperatorControl()){
+    		
     		leftX = leftJoy.getX();
     		leftY = leftJoy.getY();
     		rightX = rightJoy.getX();
     		rightY =rightJoy.getY();
     		
     		drive.mecanumDrive_Cartesian(leftX, rightX, leftY, gyro.getAngle());
+    		
+    		// Reset gyro automatically
+    		if((System.currentTimeMillis() - currentTime) > gyroResetTime){
+    			gyro.reset();
+    			currentTime = System.currentTimeMillis();
+    		}
     		
     		timer.delay(0.01);
     	}
