@@ -1,9 +1,7 @@
 
 package org.yetirobotics.frc.team3506.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -13,11 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
-	// Declaration of various peripherals
 	Joystick leftJoy;
 	Joystick rightJoy;
 	RobotDrive drive;
@@ -26,7 +19,6 @@ public class Robot extends IterativeRobot {
 	Talon leftFront;
 	Talon rightBack;
 	Talon rightFront;
-	Timer timer;
 	Relay spike;
 	
 	// Integer ports according to roboRio setup
@@ -39,13 +31,13 @@ public class Robot extends IterativeRobot {
 	final int RIGHT_BACK_PORT = 1;
 	final int RIGHT_FRONT_PORT = 0;
 	
-	final int GYRO_PORT = 0; 
+	final int GYRO_PORT = 5; 
 	final int SPIKE_PORT = 0; // Not currently used
 	
 	// Following speeds require double values between -1.0 and 1.0
-	final double X_SPEED = 0;
-	final double Y_SPEED = 0;
-	final double ROTATION_SPEED = 0;
+	final double X_SPEED = 0.5;
+	final double Y_SPEED = 0.5;
+	final double ROTATION_SPEED = 0.5;
 	
 	// Joystick orientation 
 	double leftX;
@@ -53,21 +45,21 @@ public class Robot extends IterativeRobot {
 	double rightX;
 	double rightY;
 	
-	// Stuff
 	int gyroResetTime = 5000;
 	long currentTime;
 	
-	// Supporting methods
 	
 	
     // Runtime methods after this point
-	
+    /**
+     * This function is run when the robot is first started up and should be
+     * used for any initialization code.
+     */
 	public void robotInit() {
     	// Instantiation of various peripherals
 		leftJoy = new Joystick(LEFT_JOYSTICK_PORT);
     	rightJoy = new Joystick(RIGHT_JOYSTICK_PORT);
     	gyro = new Gyro(GYRO_PORT);
-    	timer = new Timer();
     	spike = new Relay(SPIKE_PORT);
     	drive = new RobotDrive(LEFT_BACK_PORT, LEFT_FRONT_PORT, RIGHT_BACK_PORT, RIGHT_FRONT_PORT);
     	gyro.reset();
@@ -99,8 +91,6 @@ public class Robot extends IterativeRobot {
     			gyro.reset();
     			currentTime = System.currentTimeMillis();
     		}
-    		
-    		timer.delay(0.01);
     	}
     }
     
