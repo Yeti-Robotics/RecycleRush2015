@@ -94,6 +94,7 @@ public class Robot extends IterativeRobot {
     		rightX = deadZoneMod(rightJoy.getX());
     		rightY = deadZoneMod(rightJoy.getY());
     		
+    		SmartDashboard.putString("victoria", "hello");
     		
     		drive.mecanumDrive_Cartesian(leftY, rightX, leftX, gyro.getAngle());
         	
