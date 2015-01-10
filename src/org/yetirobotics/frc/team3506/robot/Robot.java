@@ -96,7 +96,8 @@ public class Robot extends IterativeRobot {
     		
     		
     		drive.mecanumDrive_Cartesian(leftY, rightX, leftX, gyro.getAngle());
-    		SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
+        	
+        	SmartDashboard.putData("Gyro",gyro);
     		
     		if(leftJoy.getRawButton(7)){
     			gyro.reset();
@@ -114,7 +115,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    	
+
     }
     
 }
