@@ -2,6 +2,7 @@
 package org.yetirobotics.frc.team3506.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,22 +23,22 @@ public class Robot extends IterativeRobot {
 	Relay spike;
 	
 	// Integer ports according to roboRio setup
-	final int LEFT_JOYSTICK_PORT = 1;
-	final int RIGHT_JOYSTICK_PORT = 2;
+	final static int LEFT_JOYSTICK_PORT = 1;
+	final static int RIGHT_JOYSTICK_PORT = 2;
 	
 	// Talon ports 
-	final int LEFT_BACK_PORT = 3;
-	final int LEFT_FRONT_PORT = 2;
-	final int RIGHT_BACK_PORT = 1;
-	final int RIGHT_FRONT_PORT = 0;
+	final static int LEFT_BACK_PORT = 3;
+	final static int LEFT_FRONT_PORT = 2;
+	final static int RIGHT_BACK_PORT = 1;
+	final static int RIGHT_FRONT_PORT = 0;
 	
-	final int GYRO_PORT = 5; 
-	final int SPIKE_PORT = 0; // Not currently used
+	final static int GYRO_PORT = 0; 
+	final static int SPIKE_PORT = 0; // Not currently used
 	
 	// Following speeds require double values between -1.0 and 1.0
-	final double X_SPEED = 0.5;
-	final double Y_SPEED = 0.5;
-	final double ROTATION_SPEED = 0.5;
+	final static double X_SPEED = 0.25;
+	final static double Y_SPEED = 0.25;
+	final static double ROTATION_SPEED = 0.25;
 	
 	// Joystick orientation 
 	double leftX;
@@ -48,7 +49,16 @@ public class Robot extends IterativeRobot {
 	int gyroResetTime = 5000;
 	long currentTime;
 	
+	final static double DEADZONE = 0.1;
 	
+	// Assisting methods
+	private double deadZoneMod(double joyVal){
+		if(Math.abs(joyVal)>0.1){
+			return joyVal;
+		} else{
+			return 0.0;
+		}
+	}
 	
     // Runtime methods after this point
     /**
@@ -61,7 +71,7 @@ public class Robot extends IterativeRobot {
     	rightJoy = new Joystick(RIGHT_JOYSTICK_PORT);
     	gyro = new Gyro(GYRO_PORT);
     	spike = new Relay(SPIKE_PORT);
-    	drive = new RobotDrive(LEFT_BACK_PORT, LEFT_FRONT_PORT, RIGHT_BACK_PORT, RIGHT_FRONT_PORT);
+    	drive = new RobotDrive(LEFT_FRONT_PORT, LEFT_BACK_PORT, RIGHT_FRONT_PORT, RIGHT_BACK_PORT);
     	gyro.reset();
     }
 
@@ -79,12 +89,18 @@ public class Robot extends IterativeRobot {
     	currentTime = System.currentTimeMillis();
     	while(isEnabled() && isOperatorControl()){
     		
-    		leftX = leftJoy.getX();
-    		leftY = leftJoy.getY();
-    		rightX = rightJoy.getX();
-    		rightY =rightJoy.getY();
+    		leftX = deadZoneMod(leftJoy.getX());  		
+    		leftY = deadZoneMod(leftJoy.getY());
+    		rightX = deadZoneMod(rightJoy.getX());
+    		rightY = deadZoneMod(rightJoy.getY());
     		
-    		drive.mecanumDrive_Cartesian(leftX, rightX, leftY, gyro.getAngle());
+    		
+    		drive.mecanumDrive_Cartesian(leftY, rightX, leftX, gyro.getAngle());
+    		SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
+    		
+    		if(leftJoy.getRawButton(7)){
+    			gyro.reset();
+    		}
     		
     		// Reset gyro automatically
     		if((System.currentTimeMillis() - currentTime) > gyroResetTime){
