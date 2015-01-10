@@ -72,6 +72,7 @@ public class Robot extends IterativeRobot {
     	gyro = new Gyro(GYRO_PORT);
     	spike = new Relay(SPIKE_PORT);
     	drive = new RobotDrive(LEFT_FRONT_PORT, LEFT_BACK_PORT, RIGHT_FRONT_PORT, RIGHT_BACK_PORT);
+    	rightFront = new Talon(RIGHT_FRONT_PORT);
     	gyro.reset();
     }
 
@@ -88,18 +89,14 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
     	currentTime = System.currentTimeMillis();
     	while(isEnabled() && isOperatorControl()){
-    		
     		leftX = deadZoneMod(leftJoy.getX());  		
     		leftY = deadZoneMod(leftJoy.getY());
     		rightX = deadZoneMod(rightJoy.getX());
     		rightY = deadZoneMod(rightJoy.getY());
     		
-    		SmartDashboard.putString("victoria", "hello");
-    		
-    		drive.mecanumDrive_Cartesian(leftY, rightX, leftX, gyro.getAngle());
+    		drive.mecanumDrive_Cartesian(leftX, leftY, rightX, gyro.getAngle());
         	
-        	SmartDashboard.putData("Gyro",gyro);
-    		SmartDashboard.putString("Hello","There");
+        	SmartDashboard.putData("Gyro", gyro);
         	
     		if(leftJoy.getRawButton(7)){
     			gyro.reset();
