@@ -98,7 +98,8 @@ public class Robot extends IterativeRobot {
     		drive.mecanumDrive_Cartesian(leftY, rightX, leftX, gyro.getAngle());
         	
         	SmartDashboard.putData("Gyro",gyro);
-    		
+    		SmartDashboard.putString("Hello","There");
+        	
     		if(leftJoy.getRawButton(7)){
     			gyro.reset();
     		}
