@@ -2,8 +2,6 @@
 package org.yetirobotics.frc.team3506.robot;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.Relay.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -15,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 
 	Relay spike;
-	Relay colorController;
+	DigitalOutput colorController;
 	Joystick leftJoy;
 	
     // Runtime methods after this point
@@ -26,8 +24,7 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
     	// Instantiation of various peripherals
 		leftJoy = new Joystick(1);
-		spike = new Relay(3);
-		colorController = new Relay(0);
+		colorController = new DigitalOutput(9);
     }
 
     /**
@@ -42,12 +39,11 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	while(isEnabled() && isOperatorControl()){
-    		spike.set(Value.kForward);
     		if(leftJoy.getRawButton(10)) {
-    			colorController.set(Value.kReverse);
+    			colorController.set(false);
     		}
     		else {
-    			colorController.set(Value.kForward);
+    			colorController.set(true);
     		}
     	}
     }
