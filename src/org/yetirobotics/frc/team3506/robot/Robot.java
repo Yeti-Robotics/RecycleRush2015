@@ -15,9 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 
 	Relay spike;
+	Relay colorController;
 	Joystick leftJoy;
-	I2C i2c;
-	byte[] toSend = new byte[1];
 	
     // Runtime methods after this point
     /**
@@ -28,7 +27,7 @@ public class Robot extends IterativeRobot {
     	// Instantiation of various peripherals
 		leftJoy = new Joystick(1);
 		spike = new Relay(3);
-		i2c = new I2C(I2C.Port.kOnboard, 168);
+		colorController = new Relay(0);
     }
 
     /**
@@ -45,12 +44,11 @@ public class Robot extends IterativeRobot {
     	while(isEnabled() && isOperatorControl()){
     		spike.set(Value.kForward);
     		if(leftJoy.getRawButton(10)) {
-    			toSend[0] = 76;
+    			colorController.set(Value.kReverse);
     		}
     		else {
-    			toSend[0] = 72;
+    			colorController.set(Value.kForward);
     		}
-    		i2c.transaction(toSend, 1, null, 0);
     	}
     }
     
