@@ -1,6 +1,16 @@
 package org.yetirobotics.frc.team3506.robot;
 
-import edu.wpi.first.wpilibj.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.yetirobotics.frc.team3506.robot.commands.UserDriveCommand;
+import org.yetirobotics.frc.team3506.robot.domain.RobotInput;
+import org.yetirobotics.frc.team3506.robot.subsystems.*;
+
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -11,94 +21,69 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	Joystick leftJoy;
-	Joystick rightJoy;
-	RobotDrive mecanumDrive;
-	Gyro gyro;
-	Talon leftBack;
-	Talon leftFront;
-	Talon rightBack;
-	Talon rightFront;
-	Compressor compressor;
-	DoubleSolenoid solenoid1;
-	DoubleSolenoid solenoid2;
 
-	// Integer ports according to roboRio setup
-	final static int LEFT_JOYSTICK_PORT = 1;
-	final static int RIGHT_JOYSTICK_PORT = 2;
+	public static OI oi;
+	public static DriveSubsystem drive;
+	public static SensorSubsystem sensorBase;
+	public static CompressorSubsystem compressor;
+	public static LEDSubsystem ledSubsystem;
+	public static RobotArm robotarm;
+	public static boolean recording = false;
+	public static boolean playing = false;
+	public static RobotInput input;
+//	public static RobotInput previousInput = new RobotInput();
+	public static List<RobotInput> inputs = new ArrayList<RobotInput>();
+	
 
-	// Talon ports
-	final static int LEFT_BACK_PORT = 3;
-	final static int LEFT_FRONT_PORT = 2;
-	final static int RIGHT_BACK_PORT = 1;
-	final static int RIGHT_FRONT_PORT = 0;
+	Command autonomousCommand;
 
-	final static int GYRO_PORT = 0;
-	final static int SPIKE_PORT = 0; // Not currently used
-
-	// Following speeds require double values between -1.0 and 1.0
-	final static double X_SPEED = 0.25;
-	final static double Y_SPEED = 0.25;
-	final static double ROTATION_SPEED = 0.25;
-
-	// Joystick orientation
-	double leftX;
-	double leftY;
-	double rightX;
-	double rightY;
-
-	// For gyro reset
-	int gyroResetTime = 5000;
-	long currentTime;
-
-	// Solenoid ports
-	final static int SOLENOID_1_PORT = 0;
-	final static int SOLENOID_2_PORT = 0;
-
-	// CAN solenoid ports
-	final static int CAN_SOLENOID_1_FORWARD = 0;
-	final static int CAN_SOLENOID_1_REVERSE = 1;
-	final static int CAN_SOLENOID_2_FORWARD = 2;
-	final static int CAN_SOLENOID_2_REVERSE = 3;
-
-	final static double DEADZONE = 0.1;
-
-	// Assisting methods
-	private double deadZoneMod(double joyVal) {
-		if (Math.abs(joyVal) > DEADZONE) {
-			return joyVal;
-		} else {
-			return 0.0;
-		}
-	}
-
-	// Runtime methods after this point
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		// Instantiation of various peripherals
-		leftJoy = new Joystick(LEFT_JOYSTICK_PORT);
-		rightJoy = new Joystick(RIGHT_JOYSTICK_PORT);
-		gyro = new Gyro(GYRO_PORT);
-		mecanumDrive = new RobotDrive(LEFT_FRONT_PORT, LEFT_BACK_PORT,
-				RIGHT_FRONT_PORT, RIGHT_BACK_PORT);
-		gyro.reset();
+		sensorBase = new SensorSubsystem();
+		drive = new DriveSubsystem();
+		compressor = new CompressorSubsystem();
+		ledSubsystem = new LEDSubsystem();
+		robotarm = new RobotArm();
+		// this should be last
+		oi = new OI();
+	}
 
-		compressor = new Compressor();
-		compressor.setClosedLoopControl(true);
-		solenoid1 = new DoubleSolenoid(0, CAN_SOLENOID_1_FORWARD,
-				CAN_SOLENOID_1_REVERSE);
-		solenoid2 = new DoubleSolenoid(0, CAN_SOLENOID_2_FORWARD,
-				CAN_SOLENOID_2_REVERSE);
+	public void disabledPeriodic() {
+		Scheduler.getInstance().run();
+	}
 
+	public void autonomousInit() {
+		// schedule the autonomous command (example)
+		if (autonomousCommand != null)
+			autonomousCommand.start();
 	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
+		Scheduler.getInstance().run();
+	}
+
+	public void teleopInit() {
+		// This makes sure that the autonomous stops running when
+		// teleop starts running. If you want the autonomous to
+		// continue until interrupted by another command, remove
+		// this line or comment it out.
+		if (autonomousCommand != null)
+			autonomousCommand.cancel();
+		new UserDriveCommand().start();
+
+	}
+
+	/**
+	 * This function is called when the disabled button is hit. You can use it
+	 * to reset subsystems before shutting down.
+	 */
+	public void disabledInit() {
 
 	}
 
@@ -106,50 +91,35 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		currentTime = System.currentTimeMillis();
-		while (isEnabled() && isOperatorControl()) {
-			leftX = deadZoneMod(leftJoy.getX());
-			leftY = deadZoneMod(leftJoy.getY());
-			rightX = deadZoneMod(rightJoy.getX());
-			rightY = deadZoneMod(rightJoy.getY());
-
-			mecanumDrive.mecanumDrive_Cartesian(leftX, leftY, rightX,
-					gyro.getAngle());
-
-			SmartDashboard.putData("Gyro", gyro);
-			SmartDashboard.putNumber("Pressure",
-					compressor.getCompressorCurrent());
-
-			// Button operations
-			if (leftJoy.getRawButton(7)) {
-				gyro.reset();
-			}
-			if (leftJoy.getRawButton(1)) {
-				solenoid1.set(DoubleSolenoid.Value.kForward);
-			}
-			if (rightJoy.getRawButton(1)) {
-				solenoid2.set(DoubleSolenoid.Value.kForward);
-			}
-			if (leftJoy.getRawButton(2)) {
-				solenoid1.set(DoubleSolenoid.Value.kReverse);
-			}
-			if (rightJoy.getRawButton(2)) {
-				solenoid2.set(DoubleSolenoid.Value.kReverse);
-			}
-
-			// Reset gyro automatically
-			if ((System.currentTimeMillis() - currentTime) > gyroResetTime) {
-				gyro.reset();
-				currentTime = System.currentTimeMillis();
-			}
+		if (!playing) {
+			input = new RobotInput();
+			input.setButtonState(true, 10, oi.getLeftJoystick());
+			input.setButtonState(true, 4, oi.getLeftJoystick());
+			input.setLeftY(oi.getLeftY());
+			input.setRightY(oi.getRightY());
 		}
+		
+		if (recording) {
+			inputs.add(input);
+		}
+		
+		Scheduler.getInstance().run();
+		log();
 	}
 
 	/**
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
-
+		LiveWindow.run();
+		log();
 	}
 
+	private void log() {
+		drive.log();
+		sensorBase.log();
+		SmartDashboard.putBoolean("Recording:", recording);
+		SmartDashboard.putNumber("Input count:", inputs.size());
+		SmartDashboard.putBoolean("Left Button4", oi.getLeftJoystick().getRawButton(4));
+	}
 }
