@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.yetirobotics.frc.team3506.robot.commands;
+package org.yetirobotics.frc.team3506.robot.commands.drive;
 
 import org.yetirobotics.frc.team3506.robot.Robot;
 

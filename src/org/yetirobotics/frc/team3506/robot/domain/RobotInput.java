@@ -17,10 +17,10 @@ public class RobotInput implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	double leftX, leftY, rightX, rightY;
-	public boolean[] leftButtons = new boolean[RobotMap.NUMBER_OF_LEFT_JOYSTICK_BUTTONS];
-	public boolean[] rightButtons = new boolean[RobotMap.NUMBER_OF_RIGHT_JOYSTICK_BUTTONS];
-	public static Command[] leftCommands = new Command[RobotMap.NUMBER_OF_LEFT_JOYSTICK_BUTTONS];
-	public static Command[] rightCommands = new Command[RobotMap.NUMBER_OF_RIGHT_JOYSTICK_BUTTONS];
+	public boolean[] leftButtons = new boolean[RobotMap.NUMBER_OF_JOYSTICK_BUTTONS];
+	public boolean[] rightButtons = new boolean[RobotMap.NUMBER_OF_JOYSTICK_BUTTONS];
+	public static Command[] leftCommands = new Command[RobotMap.NUMBER_OF_JOYSTICK_BUTTONS];
+	public static Command[] rightCommands = new Command[RobotMap.NUMBER_OF_JOYSTICK_BUTTONS];
 	
 	/**
 	 * @param booleanArray

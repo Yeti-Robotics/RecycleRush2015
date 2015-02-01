@@ -1,18 +1,18 @@
 package org.yetirobotics.frc.team3506.robot.commands;
 
-import org.yetirobotics.frc.team3506.robot.commands.drive.UserDriveCommand;
+import org.yetirobotics.frc.team3506.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 
 /**
  *
  */
-public class RebootCommand extends Command {
+public class ToggleElevatorCommand extends Command {
 
-    public RebootCommand() {
+    public ToggleElevatorCommand() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+    	requires(Robot.elevator);
     }
 
     // Called just before this Command runs the first time
@@ -21,8 +21,7 @@ public class RebootCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-		Scheduler.getInstance().removeAll();
-    		Scheduler.getInstance().add(new UserDriveCommand());
+    	Robot.elevator.toggleOrientation();
     }
 
     // Make this return true when this Command no longer needs to run execute()

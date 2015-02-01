@@ -6,7 +6,7 @@ package org.yetirobotics.frc.team3506.robot.subsystems;
 import static org.yetirobotics.frc.team3506.robot.RobotMap.*;
 
 import org.yetirobotics.frc.team3506.robot.Robot;
-import org.yetirobotics.frc.team3506.robot.commands.UserDriveCommand;
+import org.yetirobotics.frc.team3506.robot.commands.drive.UserDriveCommand;
 
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.RobotDrive;

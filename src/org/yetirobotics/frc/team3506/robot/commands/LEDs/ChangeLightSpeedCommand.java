@@ -1,4 +1,4 @@
-package org.yetirobotics.frc.team3506.robot.commands;
+package org.yetirobotics.frc.team3506.robot.commands.LEDs;
 
 import org.yetirobotics.frc.team3506.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;

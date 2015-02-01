@@ -11,16 +11,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  *
  */
-public class SensorSubsystem extends Subsystem {
+public class NavigationSensorSubsystem extends Subsystem {
 
 	Gyro gyro;
-	Encoder leftFrontEncoder;
+	Encoder leftEncoder;
+	Encoder rightEncoder;
 	AnalogInput sonar;
 
-	public SensorSubsystem() {
+	public NavigationSensorSubsystem() {
 		gyro = new Gyro(RobotMap.GYRO_PORT);
-		leftFrontEncoder = new Encoder(RobotMap.LEFT_FRONT_ENC1, RobotMap.LEFT_FRONT_ENC2);
-		leftFrontEncoder.setDistancePerPulse(RobotMap.DIST_PER_PULSE); //In feet
+		leftEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENC[0], RobotMap.LEFT_DRIVE_ENC[1]);
+		rightEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENC[0], RobotMap.RIGHT_DRIVE_ENC[1]);
+		leftEncoder.setDistancePerPulse(RobotMap.DIST_PER_PULSE); //In feet
 		sonar = new AnalogInput(RobotMap.SONAR_PORT);
 	}
 
@@ -36,12 +38,12 @@ public class SensorSubsystem extends Subsystem {
 		gyro.reset();
 	}
 
-	public Encoder getLeftFrontEncoder() {
-		return leftFrontEncoder;
+	public Encoder getLeftEncoder() {
+		return leftEncoder;
 	}
 
-	public void resetLeftFrontEncoder(){
-    	leftFrontEncoder.reset();
+	public void resetLeftEncoder(){
+    	leftEncoder.reset();
     }
 	
 	public AnalogInput getSonar() {
@@ -50,14 +52,16 @@ public class SensorSubsystem extends Subsystem {
 	
 	public void resetAll(){
 		resetGyro();
-		resetLeftFrontEncoder();
+		resetLeftEncoder();
 	}
 
 	public void log() {
+		/*
 		SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
 		SmartDashboard.putNumber("Gyro Rate", gyro.getRate());
 		SmartDashboard.putData("Gyro", gyro);
 		SmartDashboard.putData("Encoder", leftFrontEncoder);
 		SmartDashboard.putNumber("Sonar", sonar.getVoltage());
+		*/
 	}
 }

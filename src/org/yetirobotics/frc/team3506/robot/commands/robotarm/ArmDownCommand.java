@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ArmUp extends Command {
+public class ArmDownCommand extends Command {
 
     double speed;
 
-	public ArmUp(double speed) {
+	public ArmDownCommand(double speed) {
     	requires(Robot.robotarm);
     	this.speed = speed;
     }
@@ -22,12 +22,12 @@ public class ArmUp extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.robotarm.armUp(speed);
+    	Robot.robotarm.armDown(speed);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+        return isFinished();
     }
 
     // Called once after isFinished returns true

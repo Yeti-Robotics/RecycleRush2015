@@ -9,9 +9,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class CompressorSubsystem extends Subsystem {
-
-	// Put methods for controlling this subsystem
-	// here. Call these from Commands.
 	Compressor compressor;
 
 	public void initDefaultCommand() {
@@ -30,5 +27,4 @@ public class CompressorSubsystem extends Subsystem {
 	public void turnOnCompressor() {
 		compressor.start();
 	}
-
 }

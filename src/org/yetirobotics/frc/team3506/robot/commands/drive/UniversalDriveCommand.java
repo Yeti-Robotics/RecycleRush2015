@@ -1,4 +1,4 @@
-package org.yetirobotics.frc.team3506.robot.commands;
+package org.yetirobotics.frc.team3506.robot.commands.drive;
 
 import org.yetirobotics.frc.team3506.robot.Robot;
 
@@ -30,7 +30,7 @@ public class UniversalDriveCommand extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		gyro = Robot.sensorBase.getGyro();
-		leftFront = Robot.sensorBase.getLeftFrontEncoder();
+		leftFront = Robot.sensorBase.getLeftEncoder();
 		gyro.reset();
 		leftFront.reset();
 		distanceTraveled = 0;

@@ -1,5 +1,6 @@
 package org.yetirobotics.frc.team3506.robot.subsystems;
 
+import org.yetirobotics.frc.team3506.robot.Robot;
 import org.yetirobotics.frc.team3506.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -11,7 +12,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 /**
  *
  */
-public class RobotArm extends Subsystem {
+public class RobotArmSubsystem extends Subsystem {
 
 	Talon rightArm;
 	Talon leftArm;
@@ -21,7 +22,7 @@ public class RobotArm extends Subsystem {
 
 	Relay clawBelt;
 
-	public RobotArm() {
+	public RobotArmSubsystem() {
 		rightArm = new Talon(RobotMap.RIGHT_ARM_PORT);
 		leftArm = new Talon(RobotMap.LEFT_ARM_PORT);
 
@@ -42,6 +43,11 @@ public class RobotArm extends Subsystem {
 	}
 
 	public void armUp(double speed) {
+		rightArm.set(-speed);
+		leftArm.set(-speed);
+	}
+	
+	public void moveArm(double speed){
 		rightArm.set(-speed);
 		leftArm.set(-speed);
 	}
@@ -71,5 +77,9 @@ public class RobotArm extends Subsystem {
 	
 	public void clawBeltStop() {
 		clawBelt.set(Relay.Value.kOff);
+	}
+	
+	public void userOperation(){
+		moveArm(Robot.oi.getArmY());
 	}
 }

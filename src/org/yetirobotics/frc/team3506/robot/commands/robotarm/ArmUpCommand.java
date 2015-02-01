@@ -1,18 +1,19 @@
-package org.yetirobotics.frc.team3506.robot.commands;
+package org.yetirobotics.frc.team3506.robot.commands.robotarm;
 
-import org.yetirobotics.frc.team3506.robot.commands.drive.UserDriveCommand;
+import org.yetirobotics.frc.team3506.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 
 /**
  *
  */
-public class RebootCommand extends Command {
+public class ArmUpCommand extends Command {
 
-    public RebootCommand() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+    double speed;
+
+	public ArmUpCommand(double speed) {
+    	requires(Robot.robotarm);
+    	this.speed = speed;
     }
 
     // Called just before this Command runs the first time
@@ -21,8 +22,7 @@ public class RebootCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-		Scheduler.getInstance().removeAll();
-    		Scheduler.getInstance().add(new UserDriveCommand());
+    	Robot.robotarm.armUp(speed);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -32,10 +32,12 @@ public class RebootCommand extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.robotarm.stopArm();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }
